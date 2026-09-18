@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://juliyandi35.github.io/new-portfolio-website/sitemap.xml
