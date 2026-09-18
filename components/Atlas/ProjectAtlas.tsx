@@ -14,6 +14,12 @@ export default function ProjectAtlas() {
 
   const repos = manifest.repos as Repo[];
 
+  const applicationCounts = useMemo(
+    () =>
+      new Map(manifest.applications.map((a) => [a, repos.filter((r) => r.applications.includes(a)).length])),
+    [repos],
+  );
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return repos.filter((r) => {
@@ -81,7 +87,7 @@ export default function ProjectAtlas() {
             <option value="all">All</option>
             {manifest.applications.map((a) => (
               <option key={a} value={a}>
-                {a}
+                {a} ({applicationCounts.get(a) ?? 0})
               </option>
             ))}
           </select>

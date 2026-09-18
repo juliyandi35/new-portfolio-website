@@ -11,6 +11,11 @@ const ObservatoryScene = dynamic(() => import('./ObservatoryScene'), { ssr: fals
 export default function Hero() {
   const reducedMotion = useReducedMotion();
 
+  const applications = manifest.applications.map((name) => ({
+    name,
+    count: manifest.repos.filter((r) => r.applications.includes(name)).length,
+  }));
+
   return (
     <section
       id="hero"
@@ -18,10 +23,10 @@ export default function Hero() {
       className="relative flex min-h-screen flex-col justify-end overflow-hidden bg-ink-900 text-paper"
     >
       <div className="absolute inset-0" aria-hidden="true">
-        <ObservatoryScene reducedMotion={reducedMotion} />
+        <ObservatoryScene reducedMotion={reducedMotion} applications={applications} />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24 pt-40">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-24 pt-40 pointer-events-none">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-paper/60">
           Nusantara Data Observatory
         </p>
@@ -34,11 +39,11 @@ export default function Hero() {
         <div className="mt-10 flex flex-wrap items-center gap-6">
           <a
             href="#work"
-            className="rounded-full bg-paper px-6 py-3 font-mono text-xs uppercase tracking-widest text-ink-900 transition-transform hover:scale-[1.03]"
+            className="pointer-events-auto rounded-full bg-paper px-6 py-3 font-mono text-xs uppercase tracking-widest text-ink-900 transition-transform hover:scale-[1.03]"
           >
             Explore the work
           </a>
-          <a href="#contact" className="font-mono text-xs uppercase tracking-widest text-paper/70 hover:text-paper">
+          <a href="#contact" className="pointer-events-auto font-mono text-xs uppercase tracking-widest text-paper/70 hover:text-paper">
             Contact
           </a>
         </div>
@@ -47,6 +52,7 @@ export default function Hero() {
           {manifest.totalRepos} public repositories &middot; {manifest.methodFamilies.length} method families &middot;{' '}
           {manifest.applications.length} applications
         </p>
+        <p className="mt-2 font-mono text-[11px] text-paper/40">Hover the orbiting nodes to see each tool&apos;s share.</p>
       </div>
 
       <a
