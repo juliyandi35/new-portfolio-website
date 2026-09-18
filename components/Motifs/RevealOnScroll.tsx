@@ -1,7 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
+import { motionTokens, springs } from '@/lib/motion-tokens';
+import { useSafeMotion } from '@/lib/useSafeMotion';
 
 export default function RevealOnScroll({
   children,
@@ -10,12 +12,14 @@ export default function RevealOnScroll({
   children: ReactNode;
   delay?: number;
 }) {
+  const safe = useSafeMotion(motionTokens.distance.lg);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={safe.initial}
+      whileInView={safe.animate}
       viewport={{ once: true, margin: '-10% 0px' }}
-      transition={{ duration: 0.5, delay, ease: 'easeOut' }}
+      transition={{ ...springs.gentle, delay }}
     >
       {children}
     </motion.div>

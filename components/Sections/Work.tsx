@@ -1,7 +1,9 @@
 'use client';
 
+import { motion } from 'motion/react';
 import { flagshipProjects } from '@/lib/content';
 import RevealOnScroll from '@/components/Motifs/RevealOnScroll';
+import { springs } from '@/lib/motion-tokens';
 import { ArrowUpRight } from '@phosphor-icons/react';
 
 export default function Work() {
@@ -21,11 +23,14 @@ export default function Work() {
         <div className="mt-16 space-y-px bg-ink-900/10">
           {flagshipProjects.map((project, i) => (
             <RevealOnScroll key={project.slug} delay={i * 0.04}>
-              <a
+              <motion.a
                 href={`https://github.com/juliyandi35/${project.slug}`}
                 target="_blank"
                 rel="noreferrer"
-                className="group grid grid-cols-1 gap-4 bg-paper px-2 py-8 transition-colors hover:bg-ink-900/[0.03] md:grid-cols-12 md:items-start md:gap-8"
+                initial="rest"
+                whileHover="hover"
+                animate="rest"
+                className="grid grid-cols-1 gap-4 bg-paper px-2 py-8 transition-colors hover:bg-ink-900/[0.03] md:grid-cols-12 md:items-start md:gap-8"
               >
                 <div className="md:col-span-4">
                   <h3 className="font-display text-xl text-ink-900 md:text-2xl">{project.title}</h3>
@@ -43,11 +48,20 @@ export default function Work() {
                     {project.method}
                   </p>
                 </div>
-                <div className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-tarum md:col-span-1 md:justify-end">
-                  <span className="opacity-0 transition-opacity group-hover:opacity-100">View</span>
+                <motion.div
+                  variants={{ rest: { x: 0 }, hover: { x: 4 } }}
+                  transition={springs.snappy}
+                  className="flex items-center gap-1 font-mono text-xs uppercase tracking-widest text-tarum md:col-span-1 md:justify-end"
+                >
+                  <motion.span
+                    variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    View
+                  </motion.span>
                   <ArrowUpRight size={16} />
-                </div>
-              </a>
+                </motion.div>
+              </motion.a>
             </RevealOnScroll>
           ))}
         </div>

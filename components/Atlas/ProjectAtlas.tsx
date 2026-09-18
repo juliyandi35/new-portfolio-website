@@ -1,10 +1,14 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import manifest from '@/data/manifest.json';
 import type { Repo } from '@/lib/manifestParser';
+import { motionTokens, springs } from '@/lib/motion-tokens';
 
 const PAGE_SIZE = 24;
+
+
 
 export default function ProjectAtlas() {
   const [query, setQuery] = useState('');
@@ -95,25 +99,45 @@ export default function ProjectAtlas() {
       </div>
 
       <p aria-live="polite" className="mt-4 font-mono text-xs uppercase tracking-widest text-ink-900/65">
-        {filtered.length} of {manifest.totalRepos} repositories
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={filtered.length}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={springs.snappy}
+            className="inline-block tabular-nums"
+          >
+            {filtered.length}
+          </motion.span>
+        </AnimatePresence>{' '}
+        of {manifest.totalRepos} repositories
       </p>
 
       <ul className="mt-6 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-        {pageItems.map((repo) => (
-          <li key={repo.slug} className="border-b border-ink-900/10 pb-3">
-            <a
-              href={repo.url}
-              target="_blank"
-              rel="noreferrer"
-              className="block text-sm text-ink-900/85 hover:text-tarum"
+        <AnimatePresence mode="popLayout">
+          {pageItems.map((repo) => (
+            <motion.li
+              key={repo.slug}
+              initial={{ opacity: 0, y: motionTokens.distance.sm }}
+              animate={{ opacity: 1, y: 0, transition: springs.gentle }}
+              exit={{ opacity: 0, transition: { duration: motionTokens.duration.fast } }}
+              className="border-b border-ink-900/10 pb-3"
             >
-              {repo.name}
-            </a>
-            <p className="mt-0.5 font-mono text-[11px] uppercase tracking-wide text-ink-900/65">
-              {repo.applications.join(', ')}
-            </p>
-          </li>
-        ))}
+              <a
+                href={repo.url}
+                target="_blank"
+                rel="noreferrer"
+                className="block text-sm text-ink-900/85 hover:text-tarum"
+              >
+                {repo.name}
+              </a>
+              <p className="mt-0.5 font-mono text-[11px] uppercase tracking-wide text-ink-900/65">
+                {repo.applications.join(', ')}
+              </p>
+            </motion.li>
+          ))}
+        </AnimatePresence>
       </ul>
 
       {pageCount > 1 && (

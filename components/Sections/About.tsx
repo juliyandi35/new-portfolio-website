@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { person } from '@/lib/content';
+import { basePath } from '@/lib/basePath';
 import RevealOnScroll from '@/components/Motifs/RevealOnScroll';
 import ParangDivider from '@/components/Motifs/ParangDivider';
 
@@ -9,12 +10,12 @@ export default function About() {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-6 md:grid-cols-12 md:gap-8">
         <div className="md:col-span-5">
           <RevealOnScroll>
-            <div className="relative mx-auto aspect-square w-56 overflow-hidden rounded-full border border-ink-900/10 shadow-sm md:w-full md:max-w-xs">
+            <div className="relative mx-auto aspect-[2/3] w-64 overflow-hidden rounded-2xl border border-ink-900/10 shadow-sm md:w-full md:max-w-sm">
               <Image
-                src="/images/portrait.jpg"
+                src={`${basePath}/images/portrait.jpg`}
                 alt={`Portrait of ${person.name}`}
                 fill
-                sizes="(min-width: 768px) 20rem, 14rem"
+                sizes="(min-width: 768px) 24rem, 16rem"
                 className="object-cover"
                 priority={false}
               />

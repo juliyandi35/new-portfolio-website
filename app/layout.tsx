@@ -7,26 +7,26 @@ import MotionProvider from '@/components/MotionProvider';
 const siteUrl = 'https://juliyandi35.github.io/new-portfolio-website';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(`${siteUrl}/`),
   title: {
     default: `${person.name}, ${person.credential} — ${person.tagline}`,
     template: `%s — ${person.name}`,
   },
   description: person.summary,
-  alternates: { canonical: '/' },
+  alternates: { canonical: './' },
   openGraph: {
     type: 'website',
     url: siteUrl,
     title: `${person.name}, ${person.credential} — ${person.tagline}`,
     description: person.summary,
     siteName: person.name,
-    images: ['/images/social-preview.jpg'],
+    images: ['images/social-preview.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
     title: `${person.name}, ${person.credential} — ${person.tagline}`,
     description: person.summary,
-    images: ['/images/social-preview.jpg'],
+    images: ['images/social-preview.jpg'],
   },
   robots: { index: true, follow: true },
 };

@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
+import { motion, AnimatePresence } from 'motion/react';
 import { List, X } from '@phosphor-icons/react';
 import { person } from '@/lib/content';
+import { motionTokens, springs } from '@/lib/motion-tokens';
 
 const LINKS = [
   { href: '#about', label: 'About' },
@@ -49,17 +51,24 @@ export default function SiteNav() {
         <nav aria-label="Primary" className="hidden md:block">
           <ul className="flex items-center gap-8">
             {LINKS.map((link) => (
-              <li key={link.href}>
+              <li key={link.href} className="relative py-1">
                 <a
                   href={link.href}
                   aria-current={active === link.href ? 'true' : undefined}
                   className={clsx(
-                    'font-mono text-xs uppercase tracking-widest transition-colors',
+                    'relative font-mono text-xs uppercase tracking-widest transition-colors',
                     active === link.href ? 'text-kunyit' : 'text-paper/60 hover:text-paper',
                   )}
                 >
                   {link.label}
                 </a>
+                {active === link.href && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    className="absolute -bottom-1 left-0 right-0 h-px bg-kunyit"
+                    transition={springs.gentle}
+                  />
+                )}
               </li>
             ))}
           </ul>
@@ -73,32 +82,67 @@ export default function SiteNav() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? <X size={24} /> : <List size={24} />}
+          <AnimatePresence mode="wait" initial={false}>
+            {open ? (
+              <motion.span
+                key="close"
+                initial={{ opacity: 0, rotate: -90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: 90 }}
+                transition={{ duration: motionTokens.duration.fast }}
+                className="block"
+              >
+                <X size={24} />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="open"
+                initial={{ opacity: 0, rotate: 90 }}
+                animate={{ opacity: 1, rotate: 0 }}
+                exit={{ opacity: 0, rotate: -90 }}
+                transition={{ duration: motionTokens.duration.fast }}
+                className="block"
+              >
+                <List size={24} />
+              </motion.span>
+            )}
+          </AnimatePresence>
         </button>
       </div>
 
-      <nav
-        id="mobile-nav"
-        aria-label="Primary mobile"
-        className={clsx(
-          'overflow-hidden border-b border-paper/10 bg-ink-900 transition-[max-height] md:hidden',
-          open ? 'max-h-96' : 'max-h-0',
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.nav
+            key="mobile-nav"
+            id="mobile-nav"
+            aria-label="Primary mobile"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth }}
+            className="overflow-hidden border-b border-paper/10 bg-ink-900 md:hidden"
+          >
+            <ul className="flex flex-col gap-1 px-6 py-4">
+              {LINKS.map((link, i) => (
+                <motion.li
+                  key={link.href}
+                  initial={{ opacity: 0, x: -motionTokens.distance.sm }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ ...springs.gentle, delay: i * 0.04 }}
+                >
+                  <a
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className="block py-2 font-mono text-sm uppercase tracking-widest text-paper/80"
+                  >
+                    {link.label}
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.nav>
         )}
-      >
-        <ul className="flex flex-col gap-1 px-6 py-4">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="block py-2 font-mono text-sm uppercase tracking-widest text-paper/80"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      </AnimatePresence>
     </header>
   );
 }
